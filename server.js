@@ -114,65 +114,65 @@ async function readRobotData() {
 }
 
 // 写入数据到PLC（控制机器人）- 适配ABB RAPID代码
-async function writeToPLC(address, value) {
-    if (!isConnected) {
-        console.log('PLC未连接，无法写入数据');
-        return false;
-    }
+// async function writeToPLC(address, value) {
+//     if (!isConnected) {
+//         console.log('PLC未连接，无法写入数据');
+//         return false;
+//     }
 
-    try {
-        // 将浮点数转换为两个16位寄存器（小端序，与RAPID代码匹配）
-        const buffer = Buffer.alloc(4);
-        buffer.writeFloatLE(value, 0);
+//     try {
+//         // 将浮点数转换为两个16位寄存器（小端序，与RAPID代码匹配）
+//         const buffer = Buffer.alloc(4);
+//         buffer.writeFloatLE(value, 0);
         
-        const registers = [
-            buffer.readUInt16LE(0),
-            buffer.readUInt16LE(2)
-        ];
+//         const registers = [
+//             buffer.readUInt16LE(0),
+//             buffer.readUInt16LE(2)
+//         ];
         
-        await client.writeRegisters(address, registers);
-        console.log(`成功写入数据到地址 ${address}: ${value}`);
-        return true;
-    } catch (error) {
-        console.error('写入PLC数据失败:', error);
-        return false;
-    }
-}
+//         await client.writeRegisters(address, registers);
+//         console.log(`成功写入数据到地址 ${address}: ${value}`);
+//         return true;
+//     } catch (error) {
+//         console.error('写入PLC数据失败:', error);
+//         return false;
+//     }
+// }
 
 // 写入所有关节数据到PLC
-async function writeAllJoints(jointValues) {
-    if (!isConnected) {
-        console.log('PLC未连接，无法写入数据');
-        return false;
-    }
+// async function writeAllJoints(jointValues) {
+//     if (!isConnected) {
+//         console.log('PLC未连接，无法写入数据');
+//         return false;
+//     }
 
-    try {
-        // 假设关节数据写入地址从200开始（需要根据实际RAPID代码配置调整）
-        const baseAddress = 200;
+//     try {
+//         // 假设关节数据写入地址从200开始（需要根据实际RAPID代码配置调整）
+//         const baseAddress = 200;
         
-        for (let i = 0; i < jointValues.length; i++) {
-            const value = jointValues[i];
-            const address = baseAddress + (i * 2); // 每个浮点数占2个寄存器
+//         for (let i = 0; i < jointValues.length; i++) {
+//             const value = jointValues[i];
+//             const address = baseAddress + (i * 2); // 每个浮点数占2个寄存器
             
-            // 将浮点数转换为两个16位寄存器（小端序）
-            const buffer = Buffer.alloc(4);
-            buffer.writeFloatLE(value, 0);
+//             // 将浮点数转换为两个16位寄存器（小端序）
+//             const buffer = Buffer.alloc(4);
+//             buffer.writeFloatLE(value, 0);
             
-            const registers = [
-                buffer.readUInt16LE(0),
-                buffer.readUInt16LE(2)
-            ];
+//             const registers = [
+//                 buffer.readUInt16LE(0),
+//                 buffer.readUInt16LE(2)
+//             ];
             
-            await client.writeRegisters(address, registers);
-            console.log(`写入关节${i+1}到地址 ${address}: ${value}°`);
-        }
+//             await client.writeRegisters(address, registers);
+//             console.log(`写入关节${i+1}到地址 ${address}: ${value}°`);
+//         }
         
-        return true;
-    } catch (error) {
-        console.error('写入PLC数据失败:', error);
-        return false;
-    }
-}
+//         return true;
+//     } catch (error) {
+//         console.error('写入PLC数据失败:', error);
+//         return false;
+//     }
+// }
 
 // WebSocket连接处理
 io.on('connection', (socket) => {
