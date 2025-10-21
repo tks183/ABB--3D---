@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "express": "^5.1.0",
+    "fflate": "^0.8.2",
+    "modbus-serial": "^8.0.23",
+    "socket.io": "^4.8.1",
+    "three": "^0.128.0"
+  }
+}
