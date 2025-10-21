@@ -305,7 +305,7 @@ server.listen(PORT, () => {
 
 module.exports = {
     readRobotData,
-    writeToPLC,
-    writeAllJoints,
+    // writeToPLC,
+    // writeAllJoints,
     connectToPLC
 };
