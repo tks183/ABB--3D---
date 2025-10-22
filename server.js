@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 const Modbus = require('modbus-serial');
 const path = require('path');
 
+const os = require('os');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -20,11 +21,34 @@ app.use('/libs/fflate', express.static(path.join(__dirname, 'node_modules/fflate
 
 // PLC连接配置 - 西门子Smart200支持Modbus TCP
 const PLC_CONFIG = {
-    host: '192.168.0.1', // PLC IP地址
+    host: '192.168.0.2', // PLC IP地址
     port: 502,           // Modbus TCP默认端口
     unitId: 1            // 设备ID
 };
 
+function getLocalIP() {
+    const interfaces = os.networkInterfaces();
+    const ips = {
+        ipv4: [],
+        ipv6: []
+    };
+    
+    for (const name of Object.keys(interfaces)) {
+        for (const interface of interfaces[name]) {
+            // 跳过内部（loopback）地址
+            if (!interface.internal) {
+                if (interface.family === 'IPv4') {
+                    ips.ipv4.push(interface.address);
+                } else if (interface.family === 'IPv6') {
+                    ips.ipv6.push(interface.address);
+                }
+            }
+        }
+    }
+    return ips;
+}
+
+const LOCAL_IPS = getLocalIP();
 // 创建Modbus客户端
 const client = new Modbus();
 let isConnected = false;
@@ -87,9 +111,9 @@ async function readRobotData() {
             joint6: buffer.readFloatLE(20),  // rax_6
             
             // 工具位置坐标
-            x: buffer.readFloatLE(24),       // lpos.trans.x
-            y: buffer.readFloatLE(28),       // lpos.trans.y
-            z: buffer.readFloatLE(32),       // lpos.trans.z
+            // x: buffer.readFloatLE(24),       // lpos.trans.x
+            // y: buffer.readFloatLE(28),       // lpos.trans.y
+            // z: buffer.readFloatLE(32),       // lpos.trans.z
             
             timestamp: new Date().toISOString(),
             isMockData: false
@@ -102,7 +126,7 @@ async function readRobotData() {
             关节4: robotData.joint4.toFixed(2) + '°',
             关节5: robotData.joint5.toFixed(2) + '°',
             关节6: robotData.joint6.toFixed(2) + '°',
-            位置: `X:${robotData.x.toFixed(2)}mm, Y:${robotData.y.toFixed(2)}mm, Z:${robotData.z.toFixed(2)}mm`
+            // 位置: `X:${robotData.x.toFixed(2)}mm, Y:${robotData.y.toFixed(2)}mm, Z:${robotData.z.toFixed(2)}mm`
         });
         
         return robotData;
@@ -301,6 +325,14 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`服务器运行在端口 ${PORT}`);
     console.log(`请访问 http://localhost:${PORT} 查看3D可视化界面`);
+    // 显示IPv4地址
+    if (LOCAL_IPS.ipv4.length > 0) {
+        console.log(`IPv4地址: http://${LOCAL_IPS.ipv4[0]}:${PORT}`);
+    }
+    // 显示IPv6地址
+    if (LOCAL_IPS.ipv6.length > 0) {
+        console.log(`IPv6地址: http://[${LOCAL_IPS.ipv6[0]}]:${PORT}`);
+    }
 });
 
 module.exports = {
