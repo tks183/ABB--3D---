@@ -10,7 +10,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -25,5 +24,6 @@
   "bugs": {
     "url": "https://github.com/tks183/ABB--3D---/issues"
   },
-  "homepage": "https://github.com/tks183/ABB--3D---#readme"
+  "homepage": "https://github.com/tks183/ABB--3D---#readme",
+  "devDependencies": {}
 }
