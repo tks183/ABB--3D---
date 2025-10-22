@@ -226,32 +226,32 @@ io.on('connection', (socket) => {
     }, 100); // 100ms更新频率
     
     // 处理来自客户端的控制命令
-    socket.on('controlCommand', async (data) => {
-        console.log('收到控制命令:', data);
+    // socket.on('controlCommand', async (data) => {
+    //     console.log('收到控制命令:', data);
         
-        if (data.type === 'writeJoint') {
-            // 写入单个关节数据到PLC
-            const success = await writeToPLC(data.address, data.value);
-            socket.emit('commandResult', {
-                success: success,
-                message: success ? '命令执行成功' : '命令执行失败'
-            });
-        } else if (data.type === 'writeAllJoints') {
-            // 写入所有关节数据到PLC
-            const success = await writeAllJoints(data.jointValues);
-            socket.emit('commandResult', {
-                success: success,
-                message: success ? '所有关节命令执行成功' : '关节命令执行失败'
-            });
-        } else if (data.type === 'setSpeed') {
-            // 设置机器人速度（如果支持）
-            const success = await writeToPLC(data.address, data.speed);
-            socket.emit('commandResult', {
-                success: success,
-                message: success ? '速度设置成功' : '速度设置失败'
-            });
-        }
-    });
+    //     if (data.type === 'writeJoint') {
+    //         // 写入单个关节数据到PLC
+    //         const success = await writeToPLC(data.address, data.value);
+    //         socket.emit('commandResult', {
+    //             success: success,
+    //             message: success ? '命令执行成功' : '命令执行失败'
+    //         });
+    //     } else if (data.type === 'writeAllJoints') {
+    //         // 写入所有关节数据到PLC
+    //         const success = await writeAllJoints(data.jointValues);
+    //         socket.emit('commandResult', {
+    //             success: success,
+    //             message: success ? '所有关节命令执行成功' : '关节命令执行失败'
+    //         });
+    //     } else if (data.type === 'setSpeed') {
+    //         // 设置机器人速度（如果支持）
+    //         const success = await writeToPLC(data.address, data.speed);
+    //         socket.emit('commandResult', {
+    //             success: success,
+    //             message: success ? '速度设置成功' : '速度设置失败'
+    //         });
+    //     }
+    // });
     
     // 处理客户端请求的实时数据
     socket.on('requestData', async () => {
